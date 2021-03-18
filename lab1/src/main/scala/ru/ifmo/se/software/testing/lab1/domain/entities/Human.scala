@@ -6,13 +6,15 @@ import ru.ifmo.se.software.testing.lab1.domain.DomainMonad
 import ru.ifmo.se.software.testing.lab1.domain.exceptions.DomainException._
 import ru.ifmo.se.software.testing.lab1.domain.traits.active.{MakingSpeech, Repairing}
 import ru.ifmo.se.software.testing.lab1.domain.traits.active.MakingSpeech.Speech
+import ru.ifmo.se.software.testing.lab1.domain.traits.passive.Sensible.Sense.Tired
 import ru.ifmo.se.software.testing.lab1.domain.traits.passive.Sensible.SenseGroup
 import ru.ifmo.se.software.testing.lab1.domain.traits.passive.{Breakable, Movable, Repairable, Sensible}
 
 class Human[F[_]: DomainMonad](
-             override val name: String,
-             override var position: Movable.Position)
-  extends Animal[F, (String, () => F[Unit]), Speech](name)
+    override val name: String,
+    override var position: Movable.Position,
+    val walkingDistance: Double
+  ) extends Animal[F, (String, () => F[Unit]), Speech](name)
   with MakingSpeech[F, (String, () => F[Unit])]
   with Repairing[F] {
 
@@ -57,4 +59,10 @@ class Human[F[_]: DomainMonad](
         repairable.isRepaired = true
       }
   }
+
+  override def move[T <: Movable](newPosition: Movable.Position, toMove: T): F[Unit] =
+      Applicative[F]
+        .whenA(newPosition.distanceTo(toMove.position) > walkingDistance)(makeFeel(Tired, this)).map(_ =>
+        toMove.position = newPosition
+      )
 }

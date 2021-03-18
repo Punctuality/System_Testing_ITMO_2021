@@ -25,4 +25,14 @@ object Main extends App {
   println(
     sorting.sort(list).unsafeRunSync()
   )
+
+  println(
+    sorting.lookup(list.toArray, 0).unsafeRunSync()
+  )
+
+  println(
+    sorting.lookup(list.toArray, 500)
+      .redeem(e => s"GOT ERROR: ${e.getLocalizedMessage}", r => s"GOT result: $r")
+      .unsafeRunSync()
+  )
 }

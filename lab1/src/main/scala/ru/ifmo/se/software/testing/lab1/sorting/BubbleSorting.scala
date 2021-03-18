@@ -9,8 +9,7 @@ import cats.syntax.flatMap._
 import tofu.syntax.monadic.TofuApplyOps
 import ru.ifmo.se.software.testing.lab1.sorting.OrderingF._
 
-import scala.collection.BuildFrom._
-import scala.collection.{BuildFrom, IterableOps}
+import scala.collection.IterableOps
 import scala.reflect.ClassTag
 
 class BubbleSorting[F[_]: Sync, CC[X] <: IterableOps[X, CC, CC[X]], A: OrderingF[F, *]: ClassTag]

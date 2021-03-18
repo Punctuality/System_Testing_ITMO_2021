@@ -6,4 +6,6 @@ libraryDependencies ++= Seq(
 
   "tf.tofu" % "tofu-core_2.13" % "0.10.0",
   "tf.tofu" % "tofu-logging_2.13" % "0.10.0",
+
+  "junit" % "junit" % "4.13" % Test
 )

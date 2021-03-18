@@ -7,7 +7,7 @@ import ru.ifmo.se.software.testing.lab1.sorting.{ArrayOps, Sorting}
 import scala.util.Random
 
 object Example extends App {
-  val atan = Func.atan[IO, Float]
+  val atan = Func.atan[IO, Float](1e-4F)
 
   println(atan(0.5.toFloat).unsafeRunSync())
   println(

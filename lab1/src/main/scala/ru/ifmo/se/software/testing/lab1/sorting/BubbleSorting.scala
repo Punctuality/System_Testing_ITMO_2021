@@ -8,12 +8,14 @@ import cats.syntax.traverse._
 import cats.syntax.flatMap._
 import tofu.syntax.monadic.TofuApplyOps
 import ru.ifmo.se.software.testing.lab1.sorting.OrderingF._
+import ru.ifmo.se.software.testing.lab1.sorting.ArrayOps.syntax._
 
 import scala.collection.IterableOps
 import scala.reflect.ClassTag
 
-class BubbleSorting[F[_]: Sync, CC[X] <: IterableOps[X, CC, CC[X]], A: OrderingF[F, *]: ClassTag]
-  extends Sorting[F, CC, A] {
+class BubbleSorting[F[_]: Sync, CC[X] <: IterableOps[X, CC, CC[X]], A: OrderingF[F, *]: ClassTag](
+    implicit AOs: ArrayOps[F, A]
+  ) extends Sorting[F, CC, A] {
   override def sort(collection: CC[A]): F[CC[A]] = Sync[F].defer {
     val collArray: Array[A] = collection.toArray
     val arraySize: Int      = collArray.length
@@ -22,11 +24,11 @@ class BubbleSorting[F[_]: Sync, CC[X] <: IterableOps[X, CC, CC[X]], A: OrderingF
       (0 until arraySize - bound - 1).toList.traverse{ iter =>
         for {
           isSwapped <- Ref.of[F, Boolean](false)
-          left <- lookup(collArray, iter)
-          right <- lookup(collArray, iter + 1)
+          left <- collArray.lookup(iter)
+          right <- collArray.lookup(iter + 1)
           isBigger <- left > right
           _ <-
-            if (isBigger) swap(collArray, iter, iter + 1) *> isSwapped.set(true)
+            if (isBigger) collArray.swap(iter, iter + 1) *> isSwapped.set(true)
             else Applicative[F].unit
           result <- isSwapped.get
         } yield result
@@ -38,15 +40,5 @@ class BubbleSorting[F[_]: Sync, CC[X] <: IterableOps[X, CC, CC[X]], A: OrderingF
     helper(0).map(_ =>
       collection.iterableFactory.from(collArray)
     )
-  }
-
-  override def lookup(collection: Array[A], idx: Int): F[A] =
-    Sync[F].catchNonFatal(collection(idx))
-  override def swap(collection: Array[A], idxA: Int, idxB: Int): F[Unit] = for {
-    a <- lookup(collection, idxA)
-    b <- lookup(collection, idxB)
-  } yield {
-    collection.update(idxB, a)
-    collection.update(idxA, b)
   }
 }

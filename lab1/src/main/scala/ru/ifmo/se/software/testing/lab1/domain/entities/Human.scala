@@ -12,7 +12,7 @@ import ru.ifmo.se.software.testing.lab1.domain.traits.passive.{Breakable, Movabl
 case class Human[F[_]: MonadThrow](
     override val name: String,
     override var position: Movable.Position,
-    val walkingDistance: Double
+    walkingDistance: Double
   ) extends Animal[F, (String, () => F[Unit]), Speech](name)
   with MakingSpeech[F, (String, () => F[Unit])]
   with Repairing[F] {

@@ -11,7 +11,7 @@ class MovingSpec {
 
   trait TestEnv {
     val human: Human[IO] = Human[IO]("Bob", Position(0, 0, 0), walkingDistance = 10)
-    val chair: Furniture[IO] = Furniture("Grandma's chaid", Position(1, 1, 1))
+    val chair: Furniture[IO] = Furniture("Grandma's chair", Position(1, 1, 1))
   }
 
   @Test
@@ -40,12 +40,5 @@ class MovingSpec {
     private val expectedPos = Position(666, 666, 666)
     human.move(expectedPos, chair).unsafeRunSync()
     assertEquals("Human moved chair to pos and is tired", (expectedPos, Set(Tired)), (chair.position, human.senses))
-  }
-
-  @Test
-  def moveAndAffect(): Unit = new TestEnv {
-    var sounds: List[Furniture.Noise] = List.empty
-
-    human.move(chair.position, human, () => chair.makeSound(true, "creak").map(noise => sounds = noise :: sounds))
   }
 }

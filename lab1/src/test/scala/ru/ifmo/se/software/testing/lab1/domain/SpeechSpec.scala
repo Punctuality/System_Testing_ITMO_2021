@@ -12,7 +12,7 @@ class SpeechSpec {
   trait TestEnv {
     val bob: Human[IO] = Human[IO]("Bob", Position(0, 0, 0), walkingDistance = 10)
     val tom: Human[IO] = Human[IO]("Tom", Position(1, 1, 1), walkingDistance = 10)
-    val chair: Furniture[IO] = Furniture("Grandma's chaid", Position(1, 1, 1))
+    val chair: Furniture[IO] = Furniture("Grandma's chair", Position(1, 1, 1))
   }
 
   @Test

@@ -42,4 +42,10 @@ class MovingSpec {
     assertEquals("Human moved chair to pos and is tired", (expectedPos, Set(Tired)), (chair.position, human.senses))
   }
 
+  @Test
+  def moveAndAffect(): Unit = new TestEnv {
+    var sounds: List[Furniture.Noise] = List.empty
+
+    human.move(chair.position, human, () => chair.makeSound(true, "creak").map(noise => sounds = noise :: sounds))
+  }
 }

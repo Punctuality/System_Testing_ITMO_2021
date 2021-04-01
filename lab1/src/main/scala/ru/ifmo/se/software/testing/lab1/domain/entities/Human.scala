@@ -30,7 +30,7 @@ case class Human[F[_]: MonadThrow](
   override def omitFeel[T <: Sensible](oldSense: Sensible.Sense, who: T): F[Unit] =
     MonadThrow[F].ensure(Applicative[F] pure who.senses)(
       FeelingOmittingException(oldSense, who.senses)
-    )(senses => !senses.contains(oldSense)).map( senses =>
+    )(_.contains(oldSense)).map( senses =>
       who.senses = senses - oldSense
     )
 

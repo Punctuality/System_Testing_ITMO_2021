@@ -3,7 +3,7 @@ package ru.ifmo.se.software.testing.lab1.func
 import cats.Traverse
 import cats.effect.IO
 import org.junit.Test
-import org.junit.Assert.{assertArrayEquals, assertEquals, assertThrows, assertTrue, fail}
+import org.junit.Assert._
 
 import scala.math.atan
 

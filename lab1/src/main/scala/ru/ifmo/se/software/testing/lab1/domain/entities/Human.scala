@@ -1,8 +1,7 @@
 package ru.ifmo.se.software.testing.lab1.domain.entities
 
-import cats.Applicative
+import cats.{Applicative, MonadThrow}
 import tofu.syntax.monadic._
-import ru.ifmo.se.software.testing.lab1.domain.DomainMonad
 import ru.ifmo.se.software.testing.lab1.domain.exceptions.DomainException._
 import ru.ifmo.se.software.testing.lab1.domain.traits.active.{MakingSpeech, Repairing}
 import ru.ifmo.se.software.testing.lab1.domain.traits.active.MakingSpeech.Speech
@@ -10,7 +9,7 @@ import ru.ifmo.se.software.testing.lab1.domain.traits.passive.Sensible.Sense.Tir
 import ru.ifmo.se.software.testing.lab1.domain.traits.passive.Sensible.SenseGroup
 import ru.ifmo.se.software.testing.lab1.domain.traits.passive.{Breakable, Movable, Repairable, Sensible}
 
-case class Human[F[_]: DomainMonad](
+case class Human[F[_]: MonadThrow](
     override val name: String,
     override var position: Movable.Position,
     val walkingDistance: Double
@@ -29,7 +28,7 @@ case class Human[F[_]: DomainMonad](
     }) + newSense)
 
   override def omitFeel[T <: Sensible](oldSense: Sensible.Sense, who: T): F[Unit] =
-    DomainMonad[F].ensure(Applicative[F] pure who.senses)(
+    MonadThrow[F].ensure(Applicative[F] pure who.senses)(
       FeelingOmittingException(oldSense, who.senses)
     )(senses => !senses.contains(oldSense)).map( senses =>
       who.senses = senses - oldSense
@@ -38,7 +37,7 @@ case class Human[F[_]: DomainMonad](
   override def break[T <: Breakable](toBreak: T): F[Unit] =
     toBreak match {
       case alreadyBroken if alreadyBroken.isBroken =>
-        DomainMonad[F].raiseError(AlreadyBrokenException(alreadyBroken))
+        MonadThrow[F].raiseError(AlreadyBrokenException(alreadyBroken))
       case repairable: Repairable =>
         Applicative[F].pure {
           repairable.isBroken   = true
@@ -50,9 +49,9 @@ case class Human[F[_]: DomainMonad](
 
   override def repair[T <: Repairable](toRepair: T): F[Unit] = toRepair match {
     case alreadyRepaired if alreadyRepaired.isRepaired =>
-      DomainMonad[F].raiseError(AlreadyRepairedException(toRepair))
+      MonadThrow[F].raiseError(AlreadyRepairedException(toRepair))
     case notBroken if !notBroken.isBroken && !notBroken.isRepaired =>
-      DomainMonad[F].raiseError(NotBrokenException(toRepair))
+      MonadThrow[F].raiseError(NotBrokenException(toRepair))
     case repairable =>
       Applicative[F].pure{
         repairable.isBroken   = false

@@ -91,11 +91,14 @@ class BubbleSortingSpec {
     val reversed: List[Int] = data.reverse
 
     val (sorting, Metrics(lookups, swaps, comparisons)) = ioBubbleSortingWithMetrics[Int]
+    val sorted: List[Int] = sorting.sort(reversed).unsafeRunSync()
 
-    assertEquals(data, sorting.sort(reversed).unsafeRunSync())
-    assertEquals(9900, lookups.get())
-    assertEquals(4950, swaps.get())
-    assertEquals(4950, comparisons.get())
+    val expected: (Long, Long, Long, List[Int]) =
+      (9900, 4950, 4950, data)
+    val result: (Long, Long, Long, List[Int]) =
+      (lookups.get, swaps.get, comparisons.get, sorted)
+
+    assertEquals(expected, result)
   }
 
   @Test
@@ -103,11 +106,14 @@ class BubbleSortingSpec {
     val data:     List[Int] = naturals(100)
 
     val (sorting, Metrics(lookups, swaps, comparisons)) = ioBubbleSortingWithMetrics[Int]
+    val sorted: List[Int] = sorting.sort(data).unsafeRunSync()
 
-    assertEquals(data, sorting.sort(data).unsafeRunSync())
-    assertEquals(198, lookups.get())
-    assertEquals(0, swaps.get())
-    assertEquals(99, comparisons.get())
+    val expected: (Long, Long, Long, List[Int]) =
+      (198, 0, 99, data)
+    val result: (Long, Long, Long, List[Int]) =
+      (lookups.get, swaps.get, comparisons.get, sorted)
+
+    assertEquals(expected, result)
   }
 
   @Test
@@ -116,11 +122,14 @@ class BubbleSortingSpec {
     val tailHeaded: List[Int] = data.last :: data.init
 
     val (sorting, Metrics(lookups, swaps, comparisons)) = ioBubbleSortingWithMetrics[Int]
+    val sorted: List[Int] = sorting.sort(tailHeaded).unsafeRunSync()
 
-    assertEquals(data, sorting.sort(tailHeaded).unsafeRunSync())
-    assertEquals(198 + 196, lookups.get())
-    assertEquals(99, swaps.get())
-    assertEquals(197, comparisons.get())
+    val expected: (Long, Long, Long, List[Int]) =
+      (198 + 196, 99, 197, data)
+    val result: (Long, Long, Long, List[Int]) =
+      (lookups.get, swaps.get, comparisons.get, sorted)
+
+    assertEquals(expected, result)
   }
 }
 

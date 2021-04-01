@@ -10,7 +10,7 @@ import ru.ifmo.se.software.testing.lab1.domain.traits.passive.Sensible.Sense.Tir
 import ru.ifmo.se.software.testing.lab1.domain.traits.passive.Sensible.SenseGroup
 import ru.ifmo.se.software.testing.lab1.domain.traits.passive.{Breakable, Movable, Repairable, Sensible}
 
-class Human[F[_]: DomainMonad](
+case class Human[F[_]: DomainMonad](
     override val name: String,
     override var position: Movable.Position,
     val walkingDistance: Double

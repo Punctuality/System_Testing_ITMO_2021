@@ -3,7 +3,7 @@ package ru.ifmo.se.software.testing.lab1.domain.entities
 import ru.ifmo.se.software.testing.lab1.domain.traits.active.MakingSound
 import ru.ifmo.se.software.testing.lab1.domain.traits.passive.{Movable, Repairable}
 
-class Furniture[F[_]](
+case class Furniture[F[_]](
                override val name: String,
                override var position: Movable.Position
                ) extends Item(name) with Repairable with MakingSound[F, (Boolean, String), Furniture.Noise] {

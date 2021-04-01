@@ -1,17 +1,22 @@
 package ru.ifmo.se.software.testing.lab1.func
 
+import cats.Traverse
 import cats.effect.IO
 import org.junit.Test
-import org.junit.Assert.{assertEquals, assertThrows, assertTrue, fail}
+import org.junit.Assert.{assertArrayEquals, assertEquals, assertThrows, assertTrue, fail}
+
+import scala.math.atan
 
 class AtanSpec {
 
   trait TestEnv {
     val floatPrecision: Float = 1e-5F
     val doublePrecision: Double = 1e-8F
+    val fastPrecision: Double = 1e-3
 
     val atanFloat:  Func[IO, Float, Float]   = Func.atan(floatPrecision)
     val atanDouble: Func[IO, Double, Double] = Func.atan(doublePrecision)
+    val atanFast: Func[IO, Double, Double] = Func.atan(fastPrecision)
   }
 
   @Test
@@ -159,5 +164,41 @@ class AtanSpec {
     } yield (littleLess < zeroAtan) && (zeroAtan < littleMore)
 
     assertTrue("SHOULD BE: atan(-0.01) < atan(0.0) < atan(0.01)", comparison.unsafeRunSync())
+  }
+
+  @Test
+  def testGrowing(): Unit = new TestEnv {
+    val xPoints: List[Double] = Iterator.iterate(-0.99)(_ + 0.01).takeWhile(_ <= 0.99).toList
+    val yPoints: Array[Double] = Traverse[List].traverse(xPoints)(atanFast.apply).unsafeRunSync().toArray
+
+    val growsOnSpan: Boolean = Iterator.range(1, yPoints.length).forall(idx =>
+      yPoints(idx - 1) < yPoints(idx)
+    )
+
+    assertTrue("SHOULD grow on all function span", growsOnSpan)
+  }
+
+  @Test
+  def testOddBehaviour(): Unit = new TestEnv {
+    val xPointsForward:  List[Double] = Iterator.iterate(-0.99)(_ + 0.01).takeWhile(_ <= 0.00).toList
+    val xPointsBackward: List[Double] = xPointsForward.map(_ * -1)
+
+    val yPointsForward:  List[Double] = Traverse[List].traverse(xPointsForward)(atanFast.apply).unsafeRunSync()
+    val yPointsBackward: List[Double] = Traverse[List].traverse(xPointsBackward)(atanFast.apply).unsafeRunSync()
+
+    val zeroSymmetrical: Boolean = (yPointsForward zip yPointsBackward).forall{
+      case (negative, positive) => (-negative - positive).abs <= fastPrecision
+    }
+
+    assertTrue("SHOULD be odd function", zeroSymmetrical)
+  }
+
+  @Test
+  def testWithStandard(): Unit = new TestEnv {
+    val xPoints: List[Double] = Iterator.iterate(-0.99)(_ + 0.01).takeWhile(_ <= 0.99).toList
+    val yPointsTested:   Array[Double] = Traverse[List].traverse(xPoints)(atanFast.apply).unsafeRunSync().toArray
+    val yPointsStandard: Array[Double] = xPoints.map(atan).toArray
+
+    assertArrayEquals(yPointsStandard, yPointsTested, fastPrecision)
   }
 }

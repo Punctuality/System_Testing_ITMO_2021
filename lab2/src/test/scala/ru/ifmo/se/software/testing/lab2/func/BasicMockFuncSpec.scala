@@ -16,8 +16,8 @@ class BasicMockFuncSpec {
     val doublePrecision: Double = 1e-8
     val funcPrecision: Double = 1e-3
 
-    implicit val sin: Sin[IO, Double] = Mockito.mock(classOf[Sin[IO, Double]])
-    implicit val ln: Ln[IO, Double] = Mockito.mock(classOf[Ln[IO, Double]])
+    implicit val sinM: Sin[IO, Double] = Mockito.mock(classOf[Sin[IO, Double]])
+    implicit val lnM: Ln[IO, Double] = Mockito.mock(classOf[Ln[IO, Double]])
     val generalFunc: GeneralFunc[IO, Double] = GeneralFunc[IO, Double]
 
     case class PointCheck[N](left: N, point: N, right: N) {
@@ -34,38 +34,37 @@ class BasicMockFuncSpec {
     // Mocks
 
     // Sins
-    when(sin.precision).thenReturn(doublePrecision)
-    when(sin.apply(0.0)).thenReturn(IO.pure(0.0))
-    when(sin.apply(-Pi/2+0.1)).thenReturn(IO.pure(-0.9950041652780))
-    when(sin.apply(-Pi/2)).thenReturn(IO.pure(-1.0))
-    when(sin.apply(-Pi/2-0.1)).thenReturn(IO.pure(-0.9950041652780))
-    when(sin.apply(-Pi+0.05)).thenReturn(IO.pure(-0.04997916927))
-    when(sin.apply(-Pi)).thenReturn(IO.pure(0.0))
-    when(sin.apply(-Pi-0.05)).thenReturn(IO.pure(0.04997916927))
-    when(sin.apply(-3*Pi/2+0.1)).thenReturn(IO.pure(0.9950041652780))
-    when(sin.apply(-3*Pi/2)).thenReturn(IO.pure(1.0))
-    when(sin.apply(-3*Pi/2-0.1)).thenReturn(IO.pure(0.9950041652780))
-    when(sin.apply(-Pi*2+0.05)).thenReturn(IO.pure(0.04997916927))
-    when(sin.apply(-Pi*2)).thenReturn(IO.pure(0.0))
-    when(sin.apply(-Pi*2-0.05)).thenReturn(IO.pure(-0.04997916927))
+    when(sinM.precision).thenReturn(doublePrecision)
+    when(sinM.apply(0.0)).thenReturn(IO.pure(0.0))
+    when(sinM.apply(-Pi/2+0.1)).thenReturn(IO.pure(-0.9950041652780))
+    when(sinM.apply(-Pi/2)).thenReturn(IO.pure(-1.0))
+    when(sinM.apply(-Pi/2-0.1)).thenReturn(IO.pure(-0.9950041652780))
+    when(sinM.apply(-Pi+0.05)).thenReturn(IO.pure(-0.04997916927))
+    when(sinM.apply(-Pi)).thenReturn(IO.pure(0.0))
+    when(sinM.apply(-Pi-0.05)).thenReturn(IO.pure(0.04997916927))
+    when(sinM.apply(-3*Pi/2+0.1)).thenReturn(IO.pure(0.9950041652780))
+    when(sinM.apply(-3*Pi/2)).thenReturn(IO.pure(1.0))
+    when(sinM.apply(-3*Pi/2-0.1)).thenReturn(IO.pure(0.9950041652780))
+    when(sinM.apply(-Pi*2+0.05)).thenReturn(IO.pure(0.04997916927))
+    when(sinM.apply(-Pi*2)).thenReturn(IO.pure(0.0))
+    when(sinM.apply(-Pi*2-0.05)).thenReturn(IO.pure(-0.04997916927))
 
     // Lns
-    when(ln.precision).thenReturn(doublePrecision)
-    when(ln.apply(2.0)).thenReturn(IO.pure(0.693147180559))
-    when(ln.apply(3.0)).thenReturn(IO.pure(1.098612288668))
-    when(ln.apply(5.0)).thenReturn(IO.pure(1.609437912434))
-    when(ln.apply(0.99)).thenReturn(IO.pure(-0.010050336))
-    when(ln.apply(1.0)).thenReturn(IO.pure(0.0))
-    when(ln.apply(1.01)).thenReturn(IO.pure(0.009950331))
-    when(ln.apply(0.29)).thenReturn(IO.pure(-1.237874356))
-    when(ln.apply(0.3)).thenReturn(IO.pure(-1.203972804))
-    when(ln.apply(0.31)).thenReturn(IO.pure(-1.171182982))
-    when(ln.apply(5.29)).thenReturn(IO.pure(1.665818246))
-    when(ln.apply(5.3)).thenReturn(IO.pure(1.667706821))
-    when(ln.apply(5.31)).thenReturn(IO.pure(1.669591835))
-    when(ln.apply(80)).thenReturn(IO.pure(4.382026634673))
-    when(ln.apply(100)).thenReturn(IO.pure(4.60517018598))
-    when(ln.apply(120)).thenReturn(IO.pure(4.78749174278))
+    when(lnM.apply(2.0)).thenReturn(IO.pure(0.693147180559))
+    when(lnM.apply(3.0)).thenReturn(IO.pure(1.098612288668))
+    when(lnM.apply(5.0)).thenReturn(IO.pure(1.609437912434))
+    when(lnM.apply(0.99)).thenReturn(IO.pure(-0.010050336))
+    when(lnM.apply(1.0)).thenReturn(IO.pure(0.0))
+    when(lnM.apply(1.01)).thenReturn(IO.pure(0.009950331))
+    when(lnM.apply(0.29)).thenReturn(IO.pure(-1.237874356))
+    when(lnM.apply(0.3)).thenReturn(IO.pure(-1.203972804))
+    when(lnM.apply(0.31)).thenReturn(IO.pure(-1.171182982))
+    when(lnM.apply(5.29)).thenReturn(IO.pure(1.665818246))
+    when(lnM.apply(5.3)).thenReturn(IO.pure(1.667706821))
+    when(lnM.apply(5.31)).thenReturn(IO.pure(1.669591835))
+    when(lnM.apply(80)).thenReturn(IO.pure(4.382026634673))
+    when(lnM.apply(100)).thenReturn(IO.pure(4.60517018598))
+    when(lnM.apply(120)).thenReturn(IO.pure(4.78749174278))
   }
 
   // Меньше нуля

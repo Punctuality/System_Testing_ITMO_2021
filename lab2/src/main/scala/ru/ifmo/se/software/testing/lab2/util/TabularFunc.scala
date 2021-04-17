@@ -3,6 +3,8 @@ package ru.ifmo.se.software.testing.lab2.util
 import cats.Show
 import cats.syntax.show._
 import cats.syntax.applicative._
+import cats.syntax.applicativeError._
+import cats.syntax.monadError._
 import cats.syntax.traverse._
 import cats.syntax.functor._
 import cats.effect.Sync
@@ -20,7 +22,7 @@ object TabularFunc {
     dataRange -> step match {
       case ((start, stop), step) if (start < stop) && step < (stop - start) =>
         Sync[F] defer Iterator.iterate(start)(_ + step).takeWhile(_ <= stop).toList.traverse {
-          x => func(x).map(y => show"$x,$y")
+          x => func(x).map(y => show"$x,$y").handleError(_ => show"$x,error")
         }.map(
           data => "X,Function\n"+data.mkString("\n")
         )

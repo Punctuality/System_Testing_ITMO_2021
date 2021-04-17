@@ -50,7 +50,10 @@ class GeneralFunc[F[_]: MonadThrow, N: Fractional: Ordering](
         log2R <- log2(input)
         log3R <- log3(input)
         log5R <- log5(input)
-      } yield ((((log3R - log2R) ^ 2) ^ 2) ^ 3) / log5R
+      } yield {
+        if ((input - Fractional[N].fromInt(1)).abs < sin.precision) Fractional[N].fromInt(0)
+        else ((((log3R - log2R) ^ 2) ^ 2) ^ 3) / log5R
+      }
     }
 }
 

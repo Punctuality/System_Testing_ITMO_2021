@@ -9,6 +9,6 @@ object Example extends App {
   implicit val ln: Ln[IO, Double] = Ln(1e-8)
   implicit val sin: Sin[IO, Double] = Sin(1e-8)
   val f: GeneralFunc[IO, Double] = GeneralFunc[IO, Double]
-  println(f(-2 * Pi).unsafeRunSync())
+  println(f(1).unsafeRunSync())
   f.produceCSVFile("test.csv")(-4 * Pi -> 4 * Pi, 0.001).unsafeRunSync()
 }

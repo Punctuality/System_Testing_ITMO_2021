@@ -9,5 +9,6 @@ libraryDependencies ++= Seq(
 
   "com.beachape" % "enumeratum_2.13" % "1.6.1",
 
-  "junit" % "junit" % "4.13" % Test
+  "junit" % "junit" % "4.13" % Test,
+  "org.mockito" % "mockito-core" % "3.9.0" % Test
 )

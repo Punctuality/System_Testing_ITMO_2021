@@ -29,5 +29,5 @@ object CsvProducing extends App {
   log3.produceCSVFile("lab2/src/test/resources/log3_example.csv")(0.01 -> 10.0, 0.001).unsafeRunSync()
   log5.produceCSVFile("lab2/src/test/resources/log4_example.csv")(0.01 -> 10.0, 0.001).unsafeRunSync()
 
-  ln.produceCSVFile("lab2/src/test/resources/func_example.csv")(-3 * Pi -> 10.0, 0.001).unsafeRunSync()
+  funcx.produceCSVFile("lab2/src/test/resources/func_example.csv")(-3 * Pi -> 10.0, 0.001).unsafeRunSync()
 }

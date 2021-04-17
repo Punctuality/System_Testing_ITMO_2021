@@ -27,7 +27,7 @@ object CsvProducing extends App {
   ln.produceCSVFile("lab2/src/test/resources/ln_example.csv")(0.01 -> 10.0, 0.001).unsafeRunSync()
   log2.produceCSVFile("lab2/src/test/resources/log2_example.csv")(0.01 -> 10.0, 0.001).unsafeRunSync()
   log3.produceCSVFile("lab2/src/test/resources/log3_example.csv")(0.01 -> 10.0, 0.001).unsafeRunSync()
-  log5.produceCSVFile("lab2/src/test/resources/log4_example.csv")(0.01 -> 10.0, 0.001).unsafeRunSync()
+  log5.produceCSVFile("lab2/src/test/resources/log5_example.csv")(0.01 -> 10.0, 0.001).unsafeRunSync()
 
-  funcx.produceCSVFile("lab2/src/test/resources/func_example.csv")(-3 * Pi -> 10.0, 0.001).unsafeRunSync()
+  func.produceCSVFile("lab2/src/test/resources/func_example.csv")(-3 * Pi -> 10.0, 0.001).unsafeRunSync()
 }

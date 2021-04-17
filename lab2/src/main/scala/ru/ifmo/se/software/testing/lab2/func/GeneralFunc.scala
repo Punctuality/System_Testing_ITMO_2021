@@ -13,18 +13,18 @@ import ru.ifmo.se.software.testing.lab2.util.RichNumeric._
 import scala.math.Pi
 
 class GeneralFunc[F[_]: MonadThrow, N: Fractional: Ordering](
-  implicit sin: Sin[F, N],
+  implicit val sin: Sin[F, N],
   ln: Ln[F, N]
 ) extends Func[F, N, N] {
 
   // Trigonometric
-  private lazy val cos: Cos[F, N] = Cos[F, N]
-  private lazy val tan: Tan[F, N] = Tan[F, N]
-  private lazy val cot: Cot[F, N] = Cot[F, N]
+  lazy val cos: Cos[F, N] = Cos[F, N]
+  lazy val tan: Tan[F, N] = Tan[F, N]
+  lazy val cot: Cot[F, N] = Cot[F, N]
   // Logarithmic
-  private lazy val log2: Log[F, N] = Log(Fractional[N].fromInt(2))
-  private lazy val log3: Log[F, N] = Log(Fractional[N].fromInt(3))
-  private lazy val log5: Log[F, N] = Log(Fractional[N].fromInt(5))
+  lazy val log2: Log[F, N] = Log(Fractional[N].fromInt(2))
+  lazy val log3: Log[F, N] = Log(Fractional[N].fromInt(3))
+  lazy val log5: Log[F, N] = Log(Fractional[N].fromInt(5))
 
   /*
     x <= 0 : (((((cos(x) ^ 2) / tan(x)) + sin(x)) * (cos(x) * cos(x))) - (cot(x) + tan(x)))

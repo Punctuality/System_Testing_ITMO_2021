@@ -11,7 +11,7 @@ import ru.ifmo.se.software.testing.lab2.util.RichFractional._
 
 import scala.math.{Fractional, Ordering}
 
-class Cos[F[_]: MonadThrow, N: Fractional: Ordering](implicit sin: Sin[F, N]) extends Func[F, N, N]{
+class Cos[F[_]: MonadThrow, N: Fractional: Ordering](implicit val sin: Sin[F, N]) extends Func[F, N, N]{
   override def apply(input: N): F[N] =
     (input.toDouble % (2.0 * Pi)).pure[F]
       .map{

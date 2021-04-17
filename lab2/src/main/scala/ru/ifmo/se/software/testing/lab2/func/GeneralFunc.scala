@@ -3,10 +3,14 @@ package ru.ifmo.se.software.testing.lab2.func
 import cats.MonadThrow
 import cats.syntax.functor._
 import cats.syntax.flatMap._
+
 import scala.Fractional.Implicits._
 import scala.Ordering.Implicits._
 import ru.ifmo.se.software.testing.lab1.func.Func
+import ru.ifmo.se.software.testing.lab2.util.RichFractional._
 import ru.ifmo.se.software.testing.lab2.util.RichNumeric._
+
+import scala.math.Pi
 
 class GeneralFunc[F[_]: MonadThrow, N: Fractional: Ordering](
   implicit sin: Sin[F, N],
@@ -34,7 +38,13 @@ class GeneralFunc[F[_]: MonadThrow, N: Fractional: Ordering](
         sinR <- sin(input)
         tanR <- tan(input)
         cotR <- cot(input)
-      } yield ((((cosR ^ 2) / tanR) + sinR) * (cosR * cosR)) - (cotR + tanR)
+      } yield {
+        val res = ((((cosR ^ 2) / tanR) + sinR) * (cosR * cosR)) - (cotR + tanR)
+        val iModded = fromDouble[N](input.toDouble % Pi).abs
+        if ((iModded < sin.precision) || ((fromDouble[N](Pi) - iModded).abs < sin.precision))
+          Fractional[N].fromInt(0)
+        else res
+      }
     } else {
       for {
         log2R <- log2(input)

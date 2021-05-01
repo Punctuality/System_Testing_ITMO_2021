@@ -41,4 +41,4 @@ lazy val lab2 = (project in file("lab2"))
   .settings(
     name := "lab2",
     libraryDependencies ++= commonSettings
-  )
+  ).dependsOn(lab1)

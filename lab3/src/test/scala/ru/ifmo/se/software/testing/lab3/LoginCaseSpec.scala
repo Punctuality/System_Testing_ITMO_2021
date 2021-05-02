@@ -6,18 +6,19 @@ import org.junit.Assert._
 import org.junit._
 import org.openqa.selenium._
 import org.openqa.selenium.chrome.ChromeDriver
-import org.openqa.selenium.safari.SafariDriver
-import org.openqa.selenium.support.ui.WebDriverWait
 
 import java.time.Duration
+import scala.util.Try
 
 class LoginCaseSpec {
   private implicit def unitToIO(action: => Unit): IO[Unit] = IO(action)
 
   private val profileUrl: String = "https://www.ivi.ru/profile"
   private val driverRef = Ref[IO].of[WebDriver](null).unsafeRunSync()
-  private val pageCaseRef = Ref[IO].of[LogicCase[IO]](null).unsafeRunSync()
-  private val creds = LogicCase.Credentials(System.getenv("login"), System.getenv("password"))
+  private val pageCaseRef = Ref[IO].of[LoginCase[IO]](null).unsafeRunSync()
+  private val creds = LoginCase.Credentials("sergeyfedorov2@gmail.com", "ABC123"
+  //System.getenv("login"), System.getenv("password")
+  )
 
   @Before
   def setUp(): Unit = (for {
@@ -28,7 +29,7 @@ class LoginCaseSpec {
       driver.manage.timeouts.implicitlyWait(Duration.ofSeconds(10))
       driver.get(profileUrl)
     }
-    _ <- pageCaseRef.updateAndGet(_ => new LogicCase[IO](driver))
+    _ <- pageCaseRef.updateAndGet(_ => new LoginCase[IO](driver))
   } yield ()).unsafeRunSync()
 
   @After
@@ -40,8 +41,8 @@ class LoginCaseSpec {
       for {
         page <- pageCaseRef.get
         _ <- page.loginProcedure(creds)
-        _ <- page.pickProfileProcedure
-      } yield assertEquals(creds.login.split('@').head, page.loginName.getText)
+        _ <- page.pickProfileProcedure()
+      } yield assertEquals("Profile name should be same as in creds",creds.login.split('@').head, page.loginName.getText)
     ).unsafeRunSync()
 
   @Test
@@ -49,6 +50,18 @@ class LoginCaseSpec {
     for {
       page <- pageCaseRef.get
       _ <- page.loginProcedure(creds.copy(password = creds.password + "_wrong"))
-    } yield assertEquals("Ошибка", page.loginFailureMessage.getText)
+      _ <- Thread.sleep(200)
+    } yield assertEquals("Should provide error message","Ошибка", page.loginFailureMessage.getText)
     ).unsafeRunSync()
+
+  @Test
+  def signOut(): Unit = (
+    for {
+      page <- pageCaseRef.get
+      _ <- page.loginProcedure(creds)
+      _ <- page.pickProfileProcedure()
+      _ <- page.signOutProcedure()
+      _ <- Thread.sleep(200)
+    } yield assertEquals("There should be no profile name", None, Try(page.loginName).toOption)
+  ).unsafeRunSync()
 }

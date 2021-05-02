@@ -16,9 +16,7 @@ class LoginCaseSpec {
   private val profileUrl: String = "https://www.ivi.ru/profile"
   private val driverRef = Ref[IO].of[WebDriver](null).unsafeRunSync()
   private val pageCaseRef = Ref[IO].of[LoginCase[IO]](null).unsafeRunSync()
-  private val creds = LoginCase.Credentials("sergeyfedorov2@gmail.com", "ABC123"
-  //System.getenv("login"), System.getenv("password")
-  )
+  private val creds = LoginCase.Credentials(System.getenv("login"), System.getenv("password"))
 
   @Before
   def setUp(): Unit = (for {

@@ -7,7 +7,6 @@ import org.junit._
 import org.openqa.selenium._
 import org.openqa.selenium.chrome.ChromeDriver
 
-import java.time.Duration
 import scala.util.Try
 
 class LoginCaseSpec {
@@ -22,12 +21,7 @@ class LoginCaseSpec {
   def setUp(): Unit = (for {
     _ <- unitToIO { System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver")}
     driver <- driverRef.updateAndGet(_ => new ChromeDriver)
-    _ <- {
-      driver.manage.window.maximize()
-      driver.manage.timeouts.implicitlyWait(Duration.ofSeconds(10))
-      driver.get(profileUrl)
-    }
-    _ <- pageCaseRef.updateAndGet(_ => new LoginCase[IO](driver))
+    _ <- pageCaseRef.updateAndGet(_ => new LoginCase[IO](profileUrl, driver))
   } yield ()).unsafeRunSync()
 
   @After

@@ -4,9 +4,10 @@ import cats.effect.Sync
 import org.openqa.selenium._
 import org.openqa.selenium.support.PageFactory
 
+import java.time.Duration
 import scala.jdk.CollectionConverters._
 
-class SearchCase[F[_]: Sync](val driver: WebDriver) {
+class SearchCase[F[_]: Sync](landingUrl: String, val driver: WebDriver) {
 
   def searchInput: WebElement =
     driver findElement By.xpath(s"/html/body/div[1]/div/div/div[2]/div/div/section[1]/div/div/form/div/div/input")
@@ -41,6 +42,10 @@ class SearchCase[F[_]: Sync](val driver: WebDriver) {
   }
 
   def presetsRetrieveProcedure(): F[Array[(String, String)]] = Sync[F] delay presetsButtons
+
+  driver.manage.window.maximize()
+  driver.manage.timeouts.implicitlyWait(Duration.ofSeconds(10))
+  driver.get(landingUrl)
 
   PageFactory.initElements(driver, this)
 }

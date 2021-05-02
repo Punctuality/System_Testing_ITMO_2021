@@ -4,9 +4,10 @@ import cats.effect.Sync
 import org.openqa.selenium._
 import org.openqa.selenium.support.PageFactory
 
+import java.time.Duration
 import scala.util.Try
 
-class LoginCase[F[_]: Sync](val driver: WebDriver) {
+class LoginCase[F[_]: Sync](landingUrl: String, val driver: WebDriver) {
 
   lazy val loginButton: WebElement =
     driver findElement By.xpath("/html/body/div[1]/div/div/div/div/button")
@@ -31,6 +32,9 @@ class LoginCase[F[_]: Sync](val driver: WebDriver) {
   def profileHintCloseButton: WebElement =
     driver findElement By.xpath("/html/body/div[3]/div/div/div/div/div[2]/div")
 
+  def moneyHintCloseButton: WebElement =
+    driver findElement By.xpath("/html/body/div[1]/div/div[3]/div/div/div[2]/div/span")
+
   def signOutButton: WebElement =
     driver findElement By.xpath("/html/body/div[1]/div/section/div/div/div[2]/a[2]")
 
@@ -42,12 +46,19 @@ class LoginCase[F[_]: Sync](val driver: WebDriver) {
 
   def pickProfileProcedure(): F[Unit] = Sync[F].delay {
     profilePickButton.click()
-    profileHintCloseButton.click()
+    Thread.sleep(50)
+    Try(moneyHintCloseButton).toOption.foreach(_.click())
+//    Thread.sleep(100)
+//    Try(profileHintCloseButton).toOption.foreach(_.click())
   }
 
   def signOutProcedure(): F[Unit] = Sync[F].delay{
     signOutButton.click()
   }
+
+  driver.manage.window.maximize()
+  driver.manage.timeouts.implicitlyWait(Duration.ofSeconds(10))
+  driver.get(landingUrl)
 
   PageFactory.initElements(driver, this)
 }

@@ -37,6 +37,8 @@ class SearchCaseSpec {
   def tearDown(): Unit =
     driverRef.get.map(_.quit()).unsafeRunSync()
 
+  // TODO Search different edge cases
+
   @Test
   def basicSearch(): Unit = (
       for {

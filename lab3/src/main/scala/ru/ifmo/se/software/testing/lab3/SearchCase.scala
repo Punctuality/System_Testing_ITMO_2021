@@ -37,6 +37,7 @@ class SearchCase[F[_]: Sync](landingUrl: String, val driver: WebDriver) {
 
   def hintsSearchProcedure(number: Int, searchText: String): F[Unit] = Sync[F].delay {
     searchInput.sendKeys(searchText)
+    Thread.sleep(100)
     val hint = hintLink(number)
     hint.click()
   }

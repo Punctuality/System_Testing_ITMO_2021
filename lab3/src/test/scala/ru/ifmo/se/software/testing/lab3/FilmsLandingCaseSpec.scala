@@ -35,7 +35,7 @@ class FilmsLandingCaseSpec {
   def tagsFilter(): Unit = (
       for {
         page <- pageCaseRef.get
-        targets: List[(String, Int)] = page.tagSuggestionList.map(a => a.getAttribute("href")).zipWithIndex
+        targets: List[(String, Int)] = page.tagSuggestionList.map(a => a.getAttribute("href")).zipWithIndex.take(4)
         results <- targets.traverse{
           case (targetLink, idx) => page.tagsFilteringProcedure(idx).map(targetLink -> _)
         }

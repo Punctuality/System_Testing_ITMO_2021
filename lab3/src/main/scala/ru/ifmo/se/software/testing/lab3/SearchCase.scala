@@ -29,6 +29,13 @@ class SearchCase[F[_]: Sync](landingUrl: String, val driver: WebDriver) {
       .map(element => element.getTagName -> element.getText)
       .toArray
 
+  def emptyResultNotion: WebElement =
+    driver findElement By.xpath("//div[@class='emptyResult__title']")
+
+  def simpleSearchProcedure(searchText: String): F[Unit] = Sync[F].delay {
+    searchInput.sendKeys(searchText + Keys.ENTER)
+  }
+
   def basicSearchProcedure(searchText: String): F[Unit] = Sync[F].delay {
     searchInput.sendKeys(searchText + Keys.ENTER)
     val result = resultLink(1)
@@ -45,7 +52,7 @@ class SearchCase[F[_]: Sync](landingUrl: String, val driver: WebDriver) {
   def presetsRetrieveProcedure(): F[Array[(String, String)]] = Sync[F] delay presetsButtons
 
   driver.manage.window.maximize()
-  driver.manage.timeouts.implicitlyWait(Duration.ofSeconds(10))
+  driver.manage.timeouts.implicitlyWait(Duration.ofSeconds(5))
   driver.get(landingUrl)
 
   PageFactory.initElements(driver, this)
